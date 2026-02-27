@@ -121,7 +121,7 @@
 ## 📁 File Structure
 
 ```
-snapfix-v1/
+<project-root>/   # e.g. snapfix_aws/
 ├── frontend/
 │   ├── src/
 │   │   ├── pages/

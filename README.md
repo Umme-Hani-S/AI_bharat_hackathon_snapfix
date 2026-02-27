@@ -28,35 +28,29 @@ A modern, full-stack SaaS application for AI-powered issue reporting and resolut
 ## 📁 Project Structure
 
 ```
-snapfix-v1/
-├── app.js                    # Main backend entry point (at root)
-├── package.json              # Root package.json with scripts
-├── .env                      # Environment variables (at root)
+snapfix_aws/                  # Project root (repo root)
+├── app.js                    # Main backend entry point (run from here)
+├── serverVariables.js        # Server config / env helpers
+├── package.json              # Root package.json with workspaces + scripts
+├── .env                      # Environment variables (create from .env.example)
 ├── frontend/                 # React + Vite frontend
 │   ├── src/
-│   │   ├── api/             # API client functions
+│   │   ├── api/              # API client functions
 │   │   ├── components/       # React components
 │   │   ├── pages/            # Page components
-│   │   ├── store/           # Zustand stores
+│   │   ├── store/            # Zustand stores
 │   │   └── ...
 │   └── ...
-├── backend/                  # Backend API
+├── backend/                  # Backend API (routes, models, config)
 │   ├── api/                  # API route files
-│   │   ├── auth.js          # Authentication routes
-│   │   └── issues.js        # Issue/Ticket routes
-│   └── src/                  # Core application code
-│       ├── config/           # Configuration files
-│       │   ├── database.js  # MongoDB connection
-│       │   ├── s3.js        # AWS S3 configuration
-│       │   └── openai.js    # OpenAI configuration
-│       ├── models/           # Mongoose models
-│       │   ├── User.js
-│       │   ├── Issue.js
-│       │   ├── Site.js
-│       │   ├── Team.js
-│       │   └── Category.js
-│       └── middleware/       # Express middleware
-│           └── auth.js       # JWT authentication
+│   │   ├── auth.js           # Authentication routes
+│   │   ├── issues.js         # Issue/Ticket routes
+│   │   ├── mobile/           # Mobile API
+│   │   └── ...
+│   └── src/
+│       ├── config/           # database.js, s3.js, openai.js
+│       ├── models/            # Mongoose models (User, Issue, Site, Client, etc.)
+│       └── middleware/       # auth.js (JWT)
 └── ...
 ```
 
@@ -70,62 +64,55 @@ snapfix-v1/
 
 ### Installation
 
-1. **Clone and install dependencies:**
+1. **Install dependencies (from project root):**
    ```bash
-   npm run install:all
+   npm install
    ```
+   This installs root, frontend, and backend dependencies (npm workspaces).
 
-2. **Create `.env` file at the root:**
+2. **Create `.env` at the project root:**
    ```bash
-   # At snapfix-v1 root level
-   cp .env.example .env  # If you have an example file
+   copy .env.example .env   # Windows
+   # or: cp .env.example .env   # macOS/Linux
    ```
-   
-   Or create `.env` manually at the root with:
+   Edit `.env` and set at least:
    ```env
-   # Server
    PORT=5000
    NODE_ENV=development
-
-   # MongoDB Atlas
    MONGODB_URI=your_mongodb_atlas_connection_string
-
-   # JWT
-   JWT_SECRET=your_jwt_secret_key_here
-
-   # AWS S3
-   AWS_ACCESS_KEY_ID=your_aws_access_key_id
-   AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
-   AWS_REGION=us-east-1
-   AWS_S3_BUCKET_NAME=your_s3_bucket_name
-
-   # OpenAI
-   OPENAI_API_KEY=your_openai_api_key
-
-   # Frontend URL
+   JWT_SECRET=your_jwt_secret_key_min_32_chars
    FRONTEND_URL=http://localhost:3000
    ```
+   Add AWS S3, OpenAI, and Google Maps keys when you need those features (see `.env.example`).
 
-3. **Run Development Servers:**
+3. **Run development**
+
+   **Option A – Both frontend and backend (from root):**
    ```bash
-   # From root directory - runs both frontend and backend
    npm run dev
    ```
-   
-   Or run separately:
-   ```bash
-   # Backend only (from root)
-   npm run dev:backend
-   # or
-   node app.js
+   - Backend: `http://localhost:5000`
+   - Frontend: `http://localhost:3000` (proxies `/api` to backend)
 
-   # Frontend only
-   npm run dev:frontend
+   **Option B – Backend via debugger + frontend in terminal**  
+   If you run the backend with your IDE debugger (e.g. launch “Node.js” on `app.js` from root):
+   - Start **frontend only** in a terminal:
+     ```bash
+     npm run dev -w frontend
+     ```
+   - Open `http://localhost:3000` in the browser. API calls go to port 5000.
+
+   **Option C – Backend and frontend in separate terminals:**
+   ```bash
+   # Terminal 1 – backend (from root)
+   npm run dev:backend
+   # or: node app.js
+
+   # Terminal 2 – frontend (from root)
+   npm run dev -w frontend
    ```
-   
-   This starts:
-   - Frontend on `http://localhost:3000`
-   - Backend on `http://localhost:5000`
+   - Frontend: `http://localhost:3000`
+   - Backend: `http://localhost:5000`
 
 ## 🎨 Features
 
@@ -224,20 +211,25 @@ See `PRODUCTION_DEPLOYMENT.md` for detailed deployment guide.
 
 ## 📋 Available Scripts
 
-### Root Level
-- `npm run dev` - Run both frontend (port 3000) and backend (port 5000) concurrently
-- `npm run dev:frontend` - Run frontend dev server only (port 3000)
-- `npm run dev:backend` - Run backend only (port 5000, always)
-- `npm run build` - Build frontend for production (creates `frontend/dist/`)
-- `npm start` - Run production server (serves API + frontend on port 5000)
-- `npm run install:all` - Install all dependencies
+All commands are run from the **project root** unless noted.
 
-### Frontend
-- `cd frontend && npm run dev` - Start Vite dev server (development only)
-- `cd frontend && npm run build` - Build for production (outputs to `dist/`)
-- `cd frontend && npm run preview` - Preview production build locally
+### Root
+| Script | Description |
+|--------|-------------|
+| `npm install` | Install all dependencies (root + frontend + backend workspaces) |
+| `npm run dev` | Run frontend (3000) and backend (5000) concurrently |
+| `npm run dev:backend` | Run backend only (`node app.js`, port 5000) |
+| `npm run dev -w frontend` | Run frontend dev server only (port 3000) |
+| `npm run build` | Build frontend for production → `frontend/dist/` |
+| `npm start` | Production: serve API + frontend from port 5000 |
+| `npm run seed:admin` | Seed admin user (backend workspace) |
 
-**Note:** In production, Vite is not needed. The backend serves the built files from `frontend/dist/`.
+### Frontend (from root with `-w frontend`, or from `frontend/`)
+- `npm run dev -w frontend` — Vite dev server (port 3000)
+- `npm run build -w frontend` — Production build
+- From `frontend/`: `npm run dev`, `npm run build`, `npm run preview`
+
+**Note:** In production, the backend serves the built frontend from `frontend/dist/`; no Vite dev server is needed.
 
 ## 🔮 Future Enhancements
 
@@ -252,11 +244,12 @@ See `PRODUCTION_DEPLOYMENT.md` for detailed deployment guide.
 
 ## 🏗️ Architecture Notes
 
-- **Backend Entry Point**: `app.js` at the root level
-- **API Routes**: Located in `backend/api/` folder
-- **Models & Config**: Located in `backend/src/` folder
-- **Frontend**: Standard React + Vite structure
-- **Environment**: `.env` file should be at the root level
+- **Backend entry point**: `app.js` at the project root (run with `node app.js` or your IDE debugger from root).
+- **API routes**: `backend/api/` (auth, issues, clients, sites, mobile, etc.).
+- **Models & config**: `backend/src/` (config, models, middleware).
+- **Frontend**: React + Vite in `frontend/`; dev server proxies `/api` to `http://localhost:5000`.
+- **Environment**: `.env` at the project root. See `.env.example` for variables.
+- **Docker**: Optional; used for production deployment with Nginx and SSL. See `PRODUCTION_DEPLOYMENT.md` and `docker-compose.yml`.
 
 ## 📄 License
 

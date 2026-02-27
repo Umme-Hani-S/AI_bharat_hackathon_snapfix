@@ -33,7 +33,7 @@ const unclearImageSubmissionSchema = new mongoose.Schema(
     submittedAt: {
       type: Date,
       default: Date.now,
-      index: true,
+      // Index defined below via schema.index() with TTL (expireAfterSeconds)
     },
     // Track the reason: 'image_unclear' or 'requires_user_input' (general)
     reason: {

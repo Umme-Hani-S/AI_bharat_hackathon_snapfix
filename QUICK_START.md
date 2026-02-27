@@ -7,14 +7,14 @@ The backend `/api/auth/login` endpoint is not getting hit because the backend se
 
 ### Step 1: Create `.env` file
 
-Create a `.env` file in the **root directory** (`snapfix-v1/.env`) with:
+Create a `.env` file in the **project root** (same folder as `app.js`) with:
 
 ```env
 MONGODB_URI=your-mongodb-connection-string
 JWT_SECRET=your-super-secret-jwt-key-min-32-characters
 NODE_ENV=development
-PORT=5001
-FRONTEND_URL=http://localhost:5000
+PORT=5000
+FRONTEND_URL=http://localhost:3000
 ```
 
 ### Step 2: Get MongoDB Connection String
@@ -33,22 +33,30 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/snapfix?retryWri
 
 ### Step 3: Start Backend Server
 
-**Option A: Start both frontend and backend**
+**Option A: Start both frontend and backend (from project root)**
 ```bash
 npm run dev
 ```
 
-**Option B: Start backend only**
+**Option B: Start backend only (from project root)**
 ```bash
 npm run dev:backend
 ```
+Or run `app.js` via your IDE debugger (ensure working directory is the project root).
 
-You should see:
+**Option C: Backend via debugger + frontend in terminal**  
+If you run the backend with the debugger, start the frontend in a separate terminal:
+```bash
+npm run dev -w frontend
+```
+Then open `http://localhost:3000` in the browser.
+
+You should see (when backend starts):
 ```
 ✅ MongoDB Connected: ...
 🚀 Backend API running on port 5000
-📱 Frontend dev server should run on port 3000
 ```
+Frontend dev server runs on port 3000 and proxies `/api` to the backend.
 
 ### Step 4: Verify Backend is Running
 
@@ -64,9 +72,9 @@ Should return:
 
 ### Step 5: Test Login
 
-1. Make sure frontend is running on port 3000 (dev) or 5000 (production)
-2. Go to `http://localhost:3000/login` (development) or `http://localhost:5000/login` (production)
-3. Try to login
+1. Ensure frontend is running on port 3000 (dev) or backend is serving the app on port 5000 (production).
+2. Go to `http://localhost:3000/login` (development) or `http://localhost:5000/login` (production build).
+3. Try to login.
 
 ## Route Verification
 

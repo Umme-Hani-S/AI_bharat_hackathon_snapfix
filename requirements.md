@@ -334,6 +334,13 @@ A modern, full-stack SaaS application that revolutionizes maintenance issue repo
 - **TR-ENV-005**: OPENAI_API_KEY for AI features
 - **TR-ENV-006**: FRONTEND_URL for CORS configuration
 
+### 4.4 Running the Application
+- **TR-RUN-001**: Backend entry point is `app.js` at the **project root** (not inside `backend/`). Run from root: `node app.js` or `npm run dev:backend`.
+- **TR-RUN-002**: Frontend is in `frontend/` (React + Vite). Run from root: `npm run dev -w frontend` (port 3000); it proxies `/api` to the backend (port 5000).
+- **TR-RUN-003**: Full dev stack: `npm run dev` runs both frontend and backend concurrently. Backend can also be run via IDE debugger with frontend in a separate terminal.
+- **TR-RUN-004**: Production: `npm run build` then `npm start`; backend serves API and static frontend from `frontend/dist/` on one port.
+- **TR-RUN-005**: Docker is optional (production deployment with Nginx/SSL). See `README.md` and `PRODUCTION_DEPLOYMENT.md` for setup and run instructions.
+
 ---
 
 ## 5. Data Requirements
@@ -483,6 +490,8 @@ A modern, full-stack SaaS application that revolutionizes maintenance issue repo
 ## Document Control
 
 **Version**: 1.0  
-**Last Updated**: February 10, 2026  
+**Last Updated**: February 2026  
 **Author**: SnapFix Team  
-**Status**: Draft
+**Status**: Draft  
+
+**Application setup and run**: See `README.md` for install, `.env` setup, and development/production run instructions. See `QUICK_START.md` for troubleshooting backend and login.

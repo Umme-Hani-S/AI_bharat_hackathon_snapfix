@@ -106,7 +106,7 @@ npm run build && npm start
 ## File Structure After Build
 
 ```
-snapfix-v1/
+<project-root>/              # e.g. snapfix_aws/
 ├── frontend/
 │   ├── dist/              ← Built static files (production)
 │   │   ├── index.html
@@ -116,7 +116,7 @@ snapfix-v1/
 │   │   └── ...
 │   └── src/               ← Source files (development)
 ├── backend/
-├── app.js                 ← Production entry point
+├── app.js                 ← Production entry point (run from root)
 └── package.json
 ```
 

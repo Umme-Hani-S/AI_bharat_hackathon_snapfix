@@ -8,9 +8,10 @@
     "backend"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
+    "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev:backend\"",
+    "dev:backend": "node app.js",
     "build": "npm run build -w frontend",
-    "start": "NODE_ENV=production node backend/app.js",
+    "start": "node app.js",
     "seed:admin": "npm run seed:admin -w backend"
   },
   "devDependencies": {

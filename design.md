@@ -172,6 +172,16 @@
   },
   resolvedGps: {
     latitude: Number,
+    latitude: 679
+    kuneomLyume hbds a
+     
+     hsdbs
+     bhsad
+     
+    latitide : Number , 
+    longtitude:Number , 
+    jhdk
+
     longitude: Number
   },
   siteId: ObjectId (ref: 'Site', required),
@@ -1821,8 +1831,8 @@ OPENAI_API_KEY=sk-...
 ### 13.3 Build Process
 
 ```bash
-# Install dependencies
-npm run install:all
+# Install dependencies (from project root)
+npm install
 
 # Build frontend
 npm run build
