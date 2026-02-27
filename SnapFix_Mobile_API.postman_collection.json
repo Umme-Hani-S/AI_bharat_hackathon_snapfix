@@ -1,0 +1,907 @@
+{
+	"info": {
+		"_postman_id": "snapfix-mobile-api-collection",
+		"name": "SnapFix Mobile API",
+		"description": "Complete collection of all SnapFix mobile API endpoints for issue reporting and management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "snapfix"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "auth", "login"]
+						},
+						"description": "Login user and get JWT token. Returns user info, token, sites, and locations."
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"User Name\",\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"clientId\": \"client_id_here\",\n  \"roles\": [\"field-staff\"],\n  \"siteIds\": [],\n  \"departmentIds\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "auth", "register"]
+						},
+						"description": "Register a new user. Requires clientId."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/auth/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "auth", "me"]
+						},
+						"description": "Get current authenticated user information."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "auth", "logout"]
+						},
+						"description": "Logout user (client-side token removal)."
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for login, register, and user management"
+		},
+		{
+			"name": "Issues",
+			"item": [
+				{
+					"name": "Get All Issues",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues?page=1&limit=20&status=open&priority=high",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Items per page (default: 20)"
+								},
+								{
+									"key": "status",
+									"value": "open",
+									"description": "Filter by status: open, in-progress, resolved, closed",
+									"disabled": true
+								},
+								{
+									"key": "priority",
+									"value": "high",
+									"description": "Filter by priority: low, medium, high, critical",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Get all issues with pagination. Automatically filtered by user role."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Issue",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "issue_id_here"
+								}
+							]
+						},
+						"description": "Get detailed information about a single issue."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Issue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "Issue description here",
+									"type": "text"
+								},
+								{
+									"key": "siteId",
+									"value": "site_id_here",
+									"type": "text"
+								},
+								{
+									"key": "categoryId",
+									"value": "category_id_here",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "department",
+									"value": "department_id_here",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "priority",
+									"value": "medium",
+									"type": "text",
+									"description": "low, medium, high, critical"
+								},
+								{
+									"key": "title",
+									"value": "Issue Title",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "locationId",
+									"value": "location_id_here",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": [],
+									"description": "Upload up to 10 images"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues"]
+						},
+						"description": "Create a new issue with optional images. Either description or image is required. AI will auto-classify the issue."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Issue Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"in-progress\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues/:id/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues", ":id", "status"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "issue_id_here"
+								}
+							]
+						},
+						"description": "Update issue status. Valid values: open, in-progress, resolved, closed. Permission check required."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Due Date",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dueDate\": \"2026-03-01T00:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues/:id/due-date",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues", ":id", "due-date"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "issue_id_here"
+								}
+							]
+						},
+						"description": "Update issue due date. Body: { dueDate: ISO date string or null }. Past dates rejected. Returns updated issue."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"category\": \"category_id_here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues/:id/category",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues", ":id", "category"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "issue_id_here"
+								}
+							]
+						},
+						"description": "Update issue category. Body: { category: categoryId or null }. Category must belong to client. Returns updated issue."
+					},
+					"response": []
+				},
+				{
+					"name": "Resolve Issue",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "resolutionDescription",
+									"value": "Issue has been resolved by...",
+									"type": "text"
+								},
+								{
+									"key": "resolutionImage",
+									"type": "file",
+									"src": [],
+									"description": "Optional resolution image"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues/:id/resolve",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues", ":id", "resolve"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "issue_id_here"
+								}
+							]
+						},
+						"description": "Resolve an issue with optional description and image. AI validates the resolution. Either description or image required."
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Issue",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user_id_to_assign\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues/:id/assign",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues", ":id", "assign"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "issue_id_here"
+								}
+							]
+						},
+						"description": "Assign or reassign issue to a user. Body: { userId: user_id or null }. Only admins can assign. Records activity comment."
+					},
+					"response": []
+				},
+				{
+					"name": "Get AI Suggestions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/issues/:id/ai-suggestions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "issues", ":id", "ai-suggestions"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "issue_id_here"
+								}
+							]
+						},
+						"description": "Get AI-powered suggestions for resolving an issue."
+					},
+					"response": []
+				}
+			],
+			"description": "Issue management endpoints for creating, viewing, updating, and resolving issues"
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "categories"]
+						},
+						"description": "Get all categories with ticket counts. Filtered by user role."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Category Name\",\n  \"description\": \"Category description\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "categories"]
+						},
+						"description": "Create a new category."
+					},
+					"response": []
+				}
+			],
+			"description": "Category management endpoints"
+		},
+		{
+			"name": "Sites",
+			"item": [
+				{
+					"name": "Get All Sites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/sites",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "sites"]
+						},
+						"description": "Get all sites. Filtered by user role and assigned sites."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Site",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/sites/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "sites", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "site_id_here"
+								}
+							]
+						},
+						"description": "Get detailed information about a single site."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Site",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Site Name\",\n  \"code\": \"SITE-001\",\n  \"location\": \"Address\",\n  \"description\": \"Site description\",\n  \"timeZone\": \"UTC\",\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/sites",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "sites"]
+						},
+						"description": "Create a new site. Automatically creates a General location for the site."
+					},
+					"response": []
+				}
+			],
+			"description": "Site management endpoints"
+		},
+		{
+			"name": "Departments",
+			"item": [
+				{
+					"name": "Get All Departments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/departments",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "departments"]
+						},
+						"description": "Get all departments. Filtered by user role and assigned departments."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Department",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Department Name\",\n  \"isCompliance\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/departments",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "departments"]
+						},
+						"description": "Create a new department."
+					},
+					"response": []
+				}
+			],
+			"description": "Department management endpoints"
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "users"]
+						},
+						"description": "Get all users for assignment dropdowns. Only admins, super admins, and client admins can access."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by Role",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/users/by-role/:role",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "users", "by-role", ":role"],
+							"variable": [
+								{
+									"key": "role",
+									"value": "field-staff",
+									"description": "One of: field-staff, head-of-staff, vendors, tenants"
+								}
+							]
+						},
+						"description": "Get users filtered by role. Only admins can access."
+					},
+					"response": []
+				}
+			],
+			"description": "User management endpoints (admin only)"
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Get Dashboard Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/dashboard/stats",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "dashboard", "stats"]
+						},
+						"description": "Get comprehensive dashboard statistics including total, open, in-progress, resolved, closed, recent (7 days), and priority breakdown. Filtered by user role."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Quick Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/dashboard/quick",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "dashboard", "quick"]
+						},
+						"description": "Get lightweight quick stats (open and assigned counts) for faster loading."
+					},
+					"response": []
+				}
+			],
+			"description": "Dashboard statistics endpoints"
+		},
+		{
+			"name": "Device",
+			"item": [
+				{
+					"name": "Register Device Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceToken\": \"device_fcm_token_here\",\n  \"platform\": \"android\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/device/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "device", "register"]
+						},
+						"description": "Register device token for push notifications. Platform: ios or android."
+					},
+					"response": []
+				},
+				{
+					"name": "Unregister Device Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceToken\": \"device_fcm_token_here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/device/unregister",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "device", "unregister"]
+						},
+						"description": "Unregister device token for push notifications."
+					},
+					"response": []
+				}
+			],
+			"description": "Device token management for push notifications"
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/notifications?limit=50&offset=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "notifications"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Maximum number of notifications (default: 50)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Offset for pagination (default: 0)"
+								}
+							]
+						},
+						"description": "Get user notifications based on assigned issues and departments."
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Notification as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/notifications/:id/read",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "notifications", ":id", "read"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "notification_id_here"
+								}
+							]
+						},
+						"description": "Mark a notification as read (placeholder endpoint)."
+					},
+					"response": []
+				}
+			],
+			"description": "Notification management endpoints"
+		},
+		{
+			"name": "Locations",
+			"item": [
+				{
+					"name": "Get All Locations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/location-list?siteId=site_id_here",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "location-list"],
+							"query": [
+								{
+									"key": "siteId",
+									"value": "site_id_here",
+									"description": "Optional: Filter by site ID",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Get all locations. Filtered by user role and assigned sites. Optionally filter by siteId."
+					},
+					"response": []
+				}
+			],
+			"description": "Location management endpoints"
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Mobile API Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/mobile/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mobile", "health"]
+						},
+						"description": "Health check endpoint for mobile API. Returns status and available endpoints."
+					},
+					"response": []
+				}
+			],
+			"description": "Health check endpoints"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string",
+			"description": "JWT token from login response"
+		}
+	]
+}

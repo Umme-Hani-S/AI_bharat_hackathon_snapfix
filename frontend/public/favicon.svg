@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background - muted reddish-brown -->
+  <rect width="100" height="100" fill="#8B4513" rx="8"/>
+  
+  <!-- Camera body shadow (long shadow effect) -->
+  <path d="M 20 30 L 80 30 L 80 75 L 20 75 Z" fill="#5D2E0A" opacity="0.6" transform="translate(4, 4)"/>
+  
+  <!-- Camera body - lighter orange with rounded corners -->
+  <rect x="20" y="30" width="60" height="45" rx="6" fill="#D2691E"/>
+  
+  <!-- Flash hot shoe (top-left corner) - dark brown circular dot -->
+  <circle cx="26" cy="36" r="2.5" fill="#5D2E0A"/>
+  
+  <!-- Shutter button (top-right corner) - white circle with dark brown outline -->
+  <circle cx="74" cy="36" r="3.5" fill="white" stroke="#5D2E0A" stroke-width="1.5"/>
+  
+  <!-- Large white circle (lens) in center -->
+  <circle cx="50" cy="52.5" r="20" fill="white"/>
+  
+  <!-- Lens shadow -->
+  <circle cx="50" cy="52.5" r="20" fill="#5D2E0A" opacity="0.3" transform="translate(2.5, 2.5)"/>
+  
+  <!-- Wrench shadow (subtle dark brown shadow on right and bottom) -->
+  <g transform="translate(52.5, 55)">
+    <path d="M -9 -3 L -9 9 L -3 9 L -3 3 L 9 3 L 9 -3 Z" fill="#5D2E0A" opacity="0.4"/>
+  </g>
+  
+  <!-- Wrench icon (white) - C-shaped head pointing top-left, handle extending bottom-right -->
+  <g transform="translate(50, 52.5)">
+    <!-- Wrench head (C-shape) pointing top-left -->
+    <path d="M -7 -5 A 5 5 0 0 1 -7 5 L -3 5 L -3 -5 Z" fill="white"/>
+    <!-- Wrench handle extending bottom-right -->
+    <rect x="-3" y="-2.5" width="9" height="5" rx="1" fill="white"/>
+  </g>
+</svg>

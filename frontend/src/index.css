@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg-light dark:bg-bg-dark text-text-mainLight dark:text-text-mainDark;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary dark:bg-primary-light hover:bg-primary-dark text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply bg-primary-light dark:bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200 cursor-pointer;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-2 border border-border-light dark:border-border-dark rounded-lg bg-surface-light dark:bg-surface-dark text-text-mainLight dark:text-text-mainDark focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all;
+  }
+  
+  .card {
+    @apply bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl p-6 border border-border-light dark:border-border-dark;
+  }
+}
+
+@layer base {
+  /* Theme-aware form elements */
+  select,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  input[type="number"],
+  textarea {
+    @apply bg-surface-light dark:bg-surface-dark text-text-mainLight dark:text-text-mainDark;
+    color-scheme: light dark;
+  }
+  
+  /* Theme-aware select options */
+  select option {
+    @apply bg-surface-light dark:bg-surface-dark text-text-mainLight dark:text-text-mainDark;
+  }
+  
+  /* All buttons should have pointer cursor */
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
