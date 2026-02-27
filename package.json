@@ -1,0 +1,23 @@
+{
+  "name": "snapfix-v1",
+  "version": "1.0.0",
+  "description": "AI-powered issue reporting and resolution SaaS",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
+    "build": "npm run build -w frontend",
+    "start": "NODE_ENV=production node backend/app.js",
+    "seed:admin": "npm run seed:admin -w backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.933.0",
+    "@aws-sdk/s3-request-presigner": "^3.933.0"
+  }
+}
