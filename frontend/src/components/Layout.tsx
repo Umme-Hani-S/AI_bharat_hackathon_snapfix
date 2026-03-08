@@ -9,7 +9,6 @@ import {
   Users,
   Tag,
   Settings,
-  Bell,
   Sun,
   Moon,
   Briefcase,
@@ -159,10 +158,6 @@ export default function Layout() {
               title="Download Reports"
             >
               <Download className="h-5 w-5" />
-            </button>
-            <button className="relative p-2 hover:bg-primary-dark rounded-lg text-white transition-colors cursor-pointer">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
             </button>
             <button
               onClick={() => setDarkMode(!darkMode)}

@@ -79,6 +79,84 @@ router.post(
   }
 )
 
+router.put(
+  '/:id',
+  protect,
+  [body('name').trim().notEmpty().withMessage('Team name is required')],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ message: errors.array()[0].msg })
+      }
+
+      const { id } = req.params
+      const { name, isCompliance } = req.body
+
+      const department = await Department.findOne({
+        _id: id,
+        clientId: req.user?.clientId,
+      })
+
+      if (!department) {
+        return res.status(404).json({ message: 'Team not found' })
+      }
+
+      if (name && name.trim() !== department.name) {
+        const existing = await Department.findOne({
+          clientId: req.user?.clientId,
+          name: name.trim(),
+          _id: { $ne: id },
+        })
+        if (existing) {
+          return res.status(409).json({ message: 'A team with this name already exists' })
+        }
+        department.name = name.trim()
+      }
+
+      if (typeof isCompliance === 'boolean') {
+        department.isCompliance = isCompliance
+      }
+
+      await department.save()
+      res.json(department)
+    } catch (error) {
+      res.status(500).json({ message: error.message || 'Server error' })
+    }
+  }
+)
+
+router.delete('/:id', protect, async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const department = await Department.findOne({
+      _id: id,
+      clientId: req.user?.clientId,
+    })
+
+    if (!department) {
+      return res.status(404).json({ message: 'Team not found' })
+    }
+
+    const User = require('../src/models/User')
+    const usersWithDept = await User.countDocuments({
+      clientId: req.user?.clientId,
+      departmentIds: id,
+    })
+    if (usersWithDept > 0) {
+      return res.status(400).json({
+        message: `Cannot delete team: ${usersWithDept} member(s) are assigned. Remove members first or reassign them.`,
+      })
+    }
+
+    await Department.deleteOne({ _id: id, clientId: req.user?.clientId })
+    res.status(204).send()
+  } catch (error) {
+    res.status(500).json({ message: error.message || 'Server error' })
+  }
+})
+
 module.exports = router
 
 

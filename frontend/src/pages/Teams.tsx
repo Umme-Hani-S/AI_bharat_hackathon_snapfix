@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Users, Search, Plus, MoreVertical, UserPlus, X } from 'lucide-react'
+import { Users, Search, Plus, MoreVertical, UserPlus, X, Edit, Trash2 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { departmentsApi, DepartmentSummary } from '../api/departments'
 import { useAuthStore } from '../store/authStore'
@@ -11,6 +11,7 @@ export default function Teams() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingTeam, setEditingTeam] = useState<DepartmentSummary | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     isCompliance: false,
@@ -32,7 +33,7 @@ export default function Teams() {
     }
   }
 
-  const handleCreateTeam = async (e: React.FormEvent) => {
+  const handleSaveTeam = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.name.trim()) {
       toast.error('Team name is required')
@@ -41,18 +42,44 @@ export default function Teams() {
 
     setSubmitting(true)
     try {
-      await departmentsApi.create({
-        name: formData.name.trim(),
-        isCompliance: formData.isCompliance,
-      })
-      toast.success('Team created successfully')
+      if (editingTeam) {
+        await departmentsApi.update(editingTeam._id, {
+          name: formData.name.trim(),
+          isCompliance: formData.isCompliance,
+        })
+        toast.success('Team updated successfully')
+      } else {
+        await departmentsApi.create({
+          name: formData.name.trim(),
+          isCompliance: formData.isCompliance,
+        })
+        toast.success('Team created successfully')
+      }
       setIsModalOpen(false)
+      setEditingTeam(null)
       setFormData({ name: '', isCompliance: false })
       loadTeams()
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to create team')
+      toast.error(error.response?.data?.message || (editingTeam ? 'Failed to update team' : 'Failed to create team'))
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  const handleEditTeam = (team: DepartmentSummary) => {
+    setEditingTeam(team)
+    setFormData({ name: team.name, isCompliance: team.isCompliance })
+    setIsModalOpen(true)
+  }
+
+  const handleDeleteTeam = async (team: DepartmentSummary) => {
+    if (!window.confirm(`Delete team "${team.name}"? This cannot be undone.`)) return
+    try {
+      await departmentsApi.delete(team._id)
+      toast.success('Team deleted')
+      loadTeams()
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to delete team')
     }
   }
 
@@ -79,7 +106,11 @@ export default function Teams() {
         {!isFieldStaff && (
           <button
             className="bg-primary dark:bg-primary-light hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2 shadow-sm"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setEditingTeam(null)
+              setFormData({ name: '', isCompliance: false })
+              setIsModalOpen(true)
+            }}
           >
             <Plus className="h-5 w-5" />
             <span>New Team</span>
@@ -119,9 +150,29 @@ export default function Teams() {
                 </div>
               </div>
               {!isFieldStaff && (
-                <button className="p-2 hover:bg-bg-light dark:hover:bg-bg-dark rounded-lg">
-                  <MoreVertical className="h-5 w-5 text-text-mutedLight dark:text-text-mutedDark" />
-                </button>
+                <div className="relative group">
+                  <button className="p-2 hover:bg-bg-light dark:hover:bg-bg-dark rounded-lg">
+                    <MoreVertical className="h-5 w-5 text-text-mutedLight dark:text-text-mutedDark" />
+                  </button>
+                  <div className="absolute right-0 top-8 hidden group-hover:block bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg shadow-lg z-10 min-w-[120px]">
+                    <button
+                      type="button"
+                      className="w-full text-left px-4 py-2 text-sm text-text-mainLight dark:text-text-mainDark hover:bg-bg-light dark:hover:bg-bg-dark flex items-center space-x-2"
+                      onClick={() => handleEditTeam(team)}
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-bg-light dark:hover:bg-bg-dark flex items-center space-x-2"
+                      onClick={() => handleDeleteTeam(team)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -156,6 +207,7 @@ export default function Teams() {
             onClick={() => {
               if (!submitting) {
                 setIsModalOpen(false)
+                setEditingTeam(null)
                 setFormData({ name: '', isCompliance: false })
               }
             }}
@@ -166,22 +218,27 @@ export default function Teams() {
               onClick={() => {
                 if (!submitting) {
                   setIsModalOpen(false)
+                  setEditingTeam(null)
                   setFormData({ name: '', isCompliance: false })
                 }
               }}
-              aria-label="Close add team form"
+              aria-label={editingTeam ? 'Close edit team form' : 'Close add team form'}
             >
               <X className="h-5 w-5 text-text-mainLight dark:text-text-mainDark" />
             </button>
 
             <div>
-              <h2 className="text-2xl font-semibold text-text-mainLight dark:text-text-mainDark">Add Team</h2>
+              <h2 className="text-2xl font-semibold text-text-mainLight dark:text-text-mainDark">
+                {editingTeam ? 'Edit Team' : 'Add Team'}
+              </h2>
               <p className="text-text-mutedLight dark:text-text-mutedDark">
-                Create a new team/department to assign tickets and members.
+                {editingTeam
+                  ? 'Update the team name and type.'
+                  : 'Create a new team/department to assign tickets and members.'}
               </p>
             </div>
 
-            <form className="space-y-4" onSubmit={handleCreateTeam}>
+            <form className="space-y-4" onSubmit={handleSaveTeam}>
               <div>
                 <label className="block text-sm text-text-mutedLight dark:text-text-mutedDark mb-2">Team Name</label>
                 <input
@@ -214,6 +271,7 @@ export default function Teams() {
                   onClick={() => {
                     if (!submitting) {
                       setIsModalOpen(false)
+                      setEditingTeam(null)
                       setFormData({ name: '', isCompliance: false })
                     }
                   }}
@@ -226,7 +284,7 @@ export default function Teams() {
                   disabled={submitting}
                   className="px-4 py-2 rounded-lg bg-primary dark:bg-primary-light hover:bg-primary-dark text-white transition-colors disabled:opacity-60 shadow-sm"
                 >
-                  {submitting ? 'Saving...' : 'Create Team'}
+                  {submitting ? 'Saving...' : editingTeam ? 'Save changes' : 'Create Team'}
                 </button>
               </div>
             </form>

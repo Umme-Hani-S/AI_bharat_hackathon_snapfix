@@ -15,6 +15,11 @@ export interface CreateDepartmentPayload {
   isCompliance?: boolean
 }
 
+export interface UpdateDepartmentPayload {
+  name?: string
+  isCompliance?: boolean
+}
+
 export const departmentsApi = {
   getAll: async (): Promise<DepartmentSummary[]> => {
     const { data } = await api.get<DepartmentSummary[]>('/departments')
@@ -22,6 +27,12 @@ export const departmentsApi = {
   },
   create: async (payload: CreateDepartmentPayload): Promise<void> => {
     await api.post('/departments', payload)
+  },
+  update: async (id: string, payload: UpdateDepartmentPayload): Promise<void> => {
+    await api.put(`/departments/${id}`, payload)
+  },
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/departments/${id}`)
   },
 }
 
